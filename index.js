@@ -1,3 +1,4 @@
+const { response } = require("express");
 const express = require("express");
 const app =  express();
 
@@ -38,6 +39,17 @@ const persons = [
 
 app.use(express.json());
 
+// GET All
 app.get("/api/persons", (request, response) => {
   response.json(persons);
 });
+
+// Send Text
+app.get("/info", (request, response) => {
+  response.send(`
+    <p> Phonebook has info for ${persons.length} people </p>
+    <p> ${new Date()}</p>
+  `)
+});
+
+
