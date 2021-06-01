@@ -65,13 +65,47 @@ app.delete("/api/persons/:id", (req, res) => {
   persons = persons.filter(p => p.id != id);
 
   if(personToDelete) {
-    res.json({
+
+    return res.status(204).json({
       delete: true,
       personToDelete
     });
-    res.status(204).end()
   } else {
     res.status(404).end();
   }
+});
+
+const generateId = () => {
+  const maxId = persons.length > 0
+    ? Math.max(...persons.map(p => p.id))
+    : 0;
+  
+  return maxId + 1;
+}
+
+// POST
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+  if(!body.name || !body.number) {
+    res.status(400).json({
+      error: "Incorrect values, missing name or number"
+    });
+  }
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number,
+  }
+  
+  persons = persons.concat(person);
+
+  res.status(204).json({
+    added: true,
+    person
+  });
+
+  console.log(person);
+
 });
 
