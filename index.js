@@ -75,12 +75,19 @@ app.delete("/api/persons/:id", (req, res) => {
   }
 });
 
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(p => p.id))
-    : 0;
+const generateId = (number) => {
+  let findId = true;
+  let id = Math.floor(Math.random() * number);
+  while(findId) {
+    let person = persons.find(p => p.id === id);
+    if(!person) {
+      findId = false;
+    } else {
+      id = Math.floor(Math.random() * number);
+    }
+  }
   
-  return maxId + 1;
+  return id;
 }
 
 // POST
@@ -92,8 +99,22 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
+  persons.forEach(p => {
+    if(p.name === body.name) {
+      res.status(400).json({
+        error: "Name already taken"
+      });
+    }
+
+    if(p.number === body.number) {
+      res.status(400).json({
+        error: "Number already taken"
+      });
+    }
+  })
+
   const person = {
-    id: generateId(),
+    id: generateId(1000),
     name: body.name,
     number: body.number,
   }
