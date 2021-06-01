@@ -1,13 +1,12 @@
 const express = require("express");
 const app =  express();
 
-
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
 });
 
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -57,5 +56,22 @@ app.get("/api/persons/:id", (req, res) => {
   const person = persons.find(p => p.id === id);
 
   person ? res.json(person) : res.status(404).end();
+});
+
+// DELETE id
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const personToDelete = persons.find(p => p.id === id);
+  persons = persons.filter(p => p.id != id);
+
+  if(personToDelete) {
+    res.json({
+      delete: true,
+      personToDelete
+    });
+    res.status(204).end()
+  } else {
+    res.status(404).end();
+  }
 });
 
