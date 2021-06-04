@@ -75,6 +75,7 @@ app.delete("/api/persons/:id", (req, res) => {
   }
 });
 
+// Generate ID for POST
 const generateId = (number) => {
   let findId = true;
   let id = Math.floor(Math.random() * number);
