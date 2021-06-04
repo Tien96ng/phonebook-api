@@ -1,4 +1,6 @@
+const { json } = require("express");
 const express = require("express");
+const morgan = require("morgan");
 const app =  express();
 
 const PORT = 3001;
@@ -34,30 +36,20 @@ let persons = [
   }
 ];
 
-const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-};
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-};
-
-
 app.use(express.json());
-app.use(requestLogger);
-app.use(unknownEndpoint);
+
+morgan.token('body', (req, res) => JSON.stringify(req.body));
+app.use(morgan(':method :url :status :req[content-length] - :response-time ms :res[content-length] :body'));
 
 // GET All
 app.get("/api/persons", (req, res) => {
+  useMorgan;
   res.json(persons);
 });
 
 // Send Text
 app.get("/info", (req, res) => {
+  
   res.send(`
     <p> Phonebook has info for ${persons.length} people </p>
     <p> ${new Date()}</p>
